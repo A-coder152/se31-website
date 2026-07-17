@@ -14,7 +14,7 @@ const relativePath = Astro.url.pathname.startsWith(base)
   ? Astro.url.pathname.slice(base.length)
   : Astro.url.pathname.replace(/^\//, "");
 const canonicalUrl = new URL(relativePath, SITE_CONFIG.siteUrl).toString();
-const socialImageUrl = new URL("favicon.png", SITE_CONFIG.siteUrl).toString();
+const socialImageUrl = new URL("social-card.png", SITE_CONFIG.siteUrl).toString();
 ---
 
 <!doctype html>
@@ -22,8 +22,10 @@ const socialImageUrl = new URL("favicon.png", SITE_CONFIG.siteUrl).toString();
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/png" href={`${base}favicon.png`} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="alternate icon" type="image/png" href={`${base}favicon.png`} />
     <link rel="shortcut icon" type="image/x-icon" href={`${base}favicon.ico`} />
+    <meta name="theme-color" content="#10211b" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -34,10 +36,14 @@ const socialImageUrl = new URL("favicon.png", SITE_CONFIG.siteUrl).toString();
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={socialImageUrl} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="SE31 Build Log — Built together. Kept useful." />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:image:alt" content="SE31 Build Log — Built together. Kept useful." />
     <script is:inline>
       (() => {
         let savedTheme = null;
@@ -54,20 +60,13 @@ const socialImageUrl = new URL("favicon.png", SITE_CONFIG.siteUrl).toString();
       })();
     </script>
   </head>
-  <body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
+  <body class="min-h-screen flex flex-col bg-paper text-ink dark:bg-night dark:text-paper transition-colors duration-200 motion-reduce:transition-none">
     <a
       href="#main-content"
-      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-3 focus:font-semibold focus:text-blue-800 focus:shadow-lg focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-blue-600 dark:focus:bg-gray-800 dark:focus:text-blue-200"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-lime focus:px-4 focus:py-3 focus:font-bold focus:text-ink focus:shadow-lg focus:outline focus:outline-3 focus:outline-offset-2 focus:outline-spruce dark:focus:outline-lime"
     >
       Skip to main content
     </a>
     <slot />
   </body>
 </html>
-
-<style is:global>
-  html {
-    font-family: system-ui, sans-serif;
-    color-scheme: light dark;
-  }
-</style>

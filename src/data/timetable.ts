@@ -13,10 +13,10 @@ export const TIMETABLE_META = {
   status: "Unofficial planning draft",
   audience: "Incoming SE31 students",
   lastChecked: "2026-07-16",
-  sourceLabel: "Check Quest when official schedules are released",
+  sourceLabel: "Check your official schedule in Quest",
   sourceUrl: "https://uwaterloo.ca/quest/",
   notice:
-    "Official Fall 2026 schedules are not yet available in Quest. This community-created draft is unofficial, may change, and should not be used for enrolment or travel decisions.",
+    "This community-created draft was assembled before official schedules were released. Check Quest for your current official schedule; this draft may differ and should not be used for enrolment or travel decisions.",
 } as const;
 
 export const TIMETABLE: TimetableEntry[] = [

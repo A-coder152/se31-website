@@ -40,7 +40,7 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
 All complaints will be reviewed and investigated promptly and fairly.
 All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 
-For non-sensitive concerns, open an issue in the [SE31 Hub repository](https://github.com/AdvancedForge/se31-website/issues/new). For a confidential report, use the private contact information listed on the [repository owner's GitHub profile](https://github.com/AdvancedForge); do not include private or sensitive details in a public issue.
+For non-sensitive concerns, open an issue in the [SE31 Build Log repository](https://github.com/AdvancedForge/se31-website/issues/new). For a confidential report, use the private contact information listed on the [repository owner's GitHub profile](https://github.com/AdvancedForge); do not include private or sensitive details in a public issue.
 
 ## Enforcement Guidelines
 

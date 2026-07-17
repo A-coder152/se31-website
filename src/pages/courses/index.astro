@@ -3,42 +3,35 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
 import CourseCard from "../../components/CourseCard.astro";
+import PageIntro from "../../components/PageIntro.astro";
 import { COURSES } from "../../data/courses";
 ---
 
 <Layout
-  title="1A Courses - SE31 Hub"
+  title="1A Courses - SE31 Build Log"
   description="A skimmable guide to the six first-term Software Engineering courses, based on archived Fall 2025 outlines."
 >
   <Navbar />
   <main id="main-content" tabindex="-1">
-    <section class="border-b border-gray-200 dark:border-gray-700 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-indigo-950 px-4 py-14 sm:py-20">
-      <div class="container mx-auto max-w-5xl">
-        <p class="text-sm font-bold uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300 mb-4">
-          Software Engineering · 1A
-        </p>
-        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 dark:text-white mb-5">
-          Your first term, course by course.
-        </h1>
-        <p class="max-w-3xl text-lg sm:text-xl leading-relaxed text-gray-600 dark:text-gray-300">
-          Get the essential topics, grading breakdown, workload, materials, and policies for all six courses—then open the original Waterloo outline when you need the full source.
-        </p>
-
-        <div class="mt-8 rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/40 px-5 py-4 text-sm text-amber-900 dark:text-amber-100">
-          <strong>Archived reference:</strong> These guides summarize Fall 2025 outlines. Course content, grading, dates, and policies can change, so always follow your current instructor and LEARN.
-        </div>
+    <PageIntro
+      eyebrow="Courses / 1A foundation"
+      title="Your first term, course by course."
+      description="Get the essential topics, grading breakdown, workload, materials and policies for all six courses—then open the original Waterloo outline when you need the full source."
+    >
+      <div class="mt-8 max-w-4xl rounded-xl border border-signal/70 bg-[#fff7d5] px-5 py-4 text-sm leading-6 text-ink dark:border-signal/50 dark:bg-[#332b12] dark:text-paper">
+        <strong class="font-black">Archived reference:</strong> These guides summarize Fall 2025 outlines. Course content, grading, dates and policies can change, so always follow your current instructor and LEARN.
       </div>
-    </section>
+    </PageIntro>
 
-    <section class="container mx-auto px-4 py-12 sm:py-16" aria-labelledby="course-list-heading">
+    <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8" aria-labelledby="course-list-heading">
       <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
         <div>
-          <p class="text-sm font-semibold text-blue-700 dark:text-blue-300 mb-2">Six required courses</p>
-          <h2 id="course-list-heading" class="text-3xl font-bold text-gray-900 dark:text-white">
+          <p class="mb-2 font-mono text-xs font-black uppercase tracking-[0.16em] text-spruce dark:text-lime">Six required courses</p>
+          <h2 id="course-list-heading" class="text-3xl font-black tracking-[-0.035em] text-ink dark:text-paper">
             Explore the term
           </h2>
         </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400">
+        <p class="text-sm text-muted dark:text-[#b8c5be]">
           Select a guide or open its archived outline directly.
         </p>
       </div>

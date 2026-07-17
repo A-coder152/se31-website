@@ -1,0 +1,25 @@
+---
+interface Props {
+  id?: string;
+  index: string;
+  label: string;
+  title: string;
+  description?: string;
+}
+
+const { id, index, label, title, description } = Astro.props;
+---
+
+<div class="max-w-3xl">
+  <p class="mb-3 font-mono text-xs font-bold uppercase tracking-[0.18em] text-spruce dark:text-lime">
+    {index} / {label}
+  </p>
+  <h2 id={id} class="text-3xl font-black tracking-[-0.035em] text-ink dark:text-paper sm:text-4xl">
+    {title}
+  </h2>
+  {description && (
+    <p class="mt-4 max-w-2xl text-base leading-7 text-muted dark:text-[#b8c5be] sm:text-lg">
+      {description}
+    </p>
+  )}
+</div>

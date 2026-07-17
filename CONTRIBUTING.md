@@ -1,4 +1,4 @@
-# Contributing to SE31 Hub
+# Contributing to SE31 Build Log
 
 We welcome contributions from all members of the SE31 cohort! This guide will help you get started.
 
@@ -9,7 +9,8 @@ There are many ways you can contribute to this project:
 1.  **Add/Update Content:**
     *   **Deadlines:** Add new important dates or update existing ones in `src/data/deadlines.ts`.
     *   **Resources:** Add useful links (academic, co-op, student life, dev tools) in `src/data/resources.ts`.
-    *   **Projects:** Showcase your projects by adding them to `src/data/projects.ts`.
+    *   **Courses:** Correct or clarify archived course guides in `src/data/courses.ts` without changing the source meaning.
+    *   **Timetable:** Update the clearly labelled planning draft in `src/data/timetable.ts` as official information becomes available.
 2.  **Improve Features:** Enhance existing features or propose new ones.
 3.  **Fix Bugs:** Help us identify and resolve issues.
 4.  **Improve Design/Accessibility:** Make the site more visually appealing and user-friendly.
@@ -21,7 +22,7 @@ There are many ways you can contribute to this project:
 2.  **Clone your forked repository:**
     ```bash
     git clone [your-fork-url]
-    cd se31-hub # Or your project directory name
+    cd se31-website
     ```
 3.  **Install dependencies:**
     ```bash
@@ -63,4 +64,4 @@ To ensure a safe and positive environment for everyone, please adhere to the fol
 *   **No Copyright Infringement:** Do not upload copyrighted course material or sensitive academic content.
 *   **Respectful Conduct:** Be respectful and constructive in all interactions and contributions, as outlined in our [Code of Conduct](CODE_OF_CONDUCT.md).
 
-Thank you for contributing to the SE31 Hub!
+Thank you for contributing to the SE31 Build Log!

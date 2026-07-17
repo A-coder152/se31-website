@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+import PageIntro from "../components/PageIntro.astro";
 import { TIMETABLE, TIMETABLE_META } from "../data/timetable";
 import { formatTorontoDate } from "../utils/date";
 
@@ -32,27 +33,26 @@ const times = Array.from({ length: 19 }, (_, i) => {
 const missingLocationCount = TIMETABLE.filter((event) => !event.location).length;
 ---
 
-<Layout title={`${TIMETABLE_META.term} Timetable - SE31 Hub`} description="An unofficial planning draft for incoming SE31 students while official schedules remain unavailable.">
+<Layout title={`${TIMETABLE_META.term} Timetable - SE31 Build Log`} description="An unofficial Fall 2026 planning draft for incoming SE31 students, with Quest linked as the current official source.">
 	<Navbar />
 
-	<main id="main-content" class="container mx-auto px-4 py-8" tabindex="-1">
-		<div class="mx-auto mb-8 max-w-4xl text-center">
-			<p class="mb-2 text-sm font-bold uppercase tracking-[0.18em] text-blue-700 dark:text-blue-300">
-				{TIMETABLE_META.status}
-			</p>
-			<h1 class="mb-3 text-4xl font-bold">{TIMETABLE_META.term} Weekly Timetable</h1>
-			<p class="text-gray-700 dark:text-gray-300">{TIMETABLE_META.audience}</p>
-		</div>
+	<main id="main-content" tabindex="-1">
+		<PageIntro
+			eyebrow={`Timetable / ${TIMETABLE_META.status}`}
+			title={`${TIMETABLE_META.term} weekly timetable.`}
+			description={TIMETABLE_META.audience}
+		>
+			<div class="mt-8 max-w-4xl rounded-xl border border-signal/70 bg-[#fff7d5] p-5 text-sm leading-6 text-ink dark:border-signal/50 dark:bg-[#332b12] dark:text-paper">
+				<p class="font-black">Unofficial schedule — do not rely on it yet.</p>
+				<p>{TIMETABLE_META.notice}</p>
+				<p class="mt-3 font-mono text-xs font-bold uppercase tracking-[0.08em]">
+					{missingLocationCount} of {TIMETABLE.length} locations unconfirmed · Last checked {formatTorontoDate(TIMETABLE_META.lastChecked)} ·
+					{" "}<a href={TIMETABLE_META.sourceUrl} target="_blank" rel="noopener noreferrer" class="brand-text-link focus-visible:outline-spruce dark:focus-visible:outline-lime">{TIMETABLE_META.sourceLabel}</a>
+				</p>
+			</div>
+		</PageIntro>
 
-		<div class="mx-auto mb-8 max-w-4xl rounded-xl border border-amber-300 bg-amber-50 p-5 text-amber-950 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100">
-			<p class="font-bold">Unofficial schedule — do not rely on it yet.</p>
-			<p class="mt-1">{TIMETABLE_META.notice}</p>
-			<p class="mt-3 text-sm">
-				{missingLocationCount} of {TIMETABLE.length} entries still have unconfirmed locations · Last checked {formatTorontoDate(TIMETABLE_META.lastChecked)} ·
-				{" "}<a href={TIMETABLE_META.sourceUrl} target="_blank" rel="noopener noreferrer" class="font-semibold underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700">{TIMETABLE_META.sourceLabel}</a>
-			</p>
-		</div>
-
+		<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
 		<section aria-labelledby="agenda-heading" class="lg:sr-only">
 			<h2 id="agenda-heading" class="mb-4 text-2xl font-bold">Daily agenda</h2>
 			<div class="space-y-6">
@@ -76,15 +76,14 @@ const missingLocationCount = TIMETABLE.filter((event) => !event.location).length
 			</div>
 		</section>
 
-		<div class="hidden overflow-x-auto lg:block" aria-hidden="true">
+		<div class="hidden overflow-x-auto rounded-xl border border-[#cbd4cc] shadow-[0_12px_32px_rgb(16_33_27_/_0.08)] lg:block dark:border-night-border" aria-hidden="true">
 			<div
 				class="
 					grid
 					min-w-[930px]
 					grid-cols-[80px_repeat(5,minmax(170px,1fr))]
 					grid-rows-[44px_auto]
-					border
-					border-gray-300
+					border-0
 					bg-white
 					dark:border-gray-600
 					dark:bg-gray-900
@@ -213,6 +212,7 @@ const missingLocationCount = TIMETABLE.filter((event) => !event.location).length
 					))
 				}
 			</div>
+		</div>
 		</div>
 	</main>
 

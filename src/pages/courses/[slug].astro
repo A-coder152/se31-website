@@ -18,6 +18,14 @@ interface Props {
 
 const { course } = Astro.props;
 const base = import.meta.env.BASE_URL;
+const department = course.code.split(" ")[0];
+const badgeClasses: Record<string, string> = {
+  MATH: "bg-sky text-ink",
+  CS: "bg-lime text-ink",
+  CHE: "bg-signal text-ink",
+  SE: "bg-spruce text-white dark:bg-[#7ed2ae] dark:text-ink",
+};
+const badgeClass = badgeClasses[department] ?? badgeClasses.SE;
 const courseIndex = COURSES.findIndex((item) => item.slug === course.slug);
 const previousCourse = courseIndex > 0 ? COURSES[courseIndex - 1] : undefined;
 const nextCourse = courseIndex < COURSES.length - 1 ? COURSES[courseIndex + 1] : undefined;
@@ -33,31 +41,31 @@ const sectionLinks = [
 ];
 ---
 
-<Layout title={`${course.code}: ${course.title} - SE31 Hub`} description={course.summary}>
+<Layout title={`${course.code}: ${course.title} - SE31 Build Log`} description={course.summary}>
   <Navbar />
   <main id="main-content" tabindex="-1">
-    <header class="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-10 sm:py-14">
-      <div class="container mx-auto max-w-6xl">
-        <nav aria-label="Breadcrumb" class="mb-6 text-sm text-gray-500 dark:text-gray-400">
-          <a href={`${base}courses`} class="hover:text-blue-600 dark:hover:text-blue-400 hover:underline">Courses</a>
+    <header class="paper-grid border-b border-[#cbd4cc] bg-[#eef0e8] px-4 py-10 dark:border-night-border dark:bg-night-panel sm:py-14">
+      <div class="mx-auto max-w-6xl">
+        <nav aria-label="Breadcrumb" class="mb-6 text-sm font-semibold text-muted dark:text-[#aebdb4]">
+          <a href={`${base}courses`} class="brand-text-link hover:text-spruce dark:hover:text-lime">Courses</a>
           <span aria-hidden="true" class="mx-2">/</span>
-          <span class="text-gray-700 dark:text-gray-200">{course.code}</span>
+          <span class="text-ink dark:text-paper">{course.code}</span>
         </nav>
 
         <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
           <div class="max-w-4xl">
-            <div class="flex flex-wrap items-center gap-3 mb-4">
-              <span class="inline-flex rounded-full bg-blue-100 dark:bg-blue-900 px-3 py-1 text-sm font-bold text-blue-800 dark:text-blue-200">
+            <div class="mb-4 flex flex-wrap items-center gap-3">
+              <span class={`inline-flex rounded-md px-3 py-1 font-mono text-xs font-black uppercase tracking-[0.08em] ${badgeClass}`}>
                 {course.code}
               </span>
-              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <span class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-muted dark:text-[#aebdb4]">
                 Based on the {course.archivedTerm} outline
               </span>
             </div>
-            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">
+            <h1 class="mb-4 text-4xl font-black leading-[1.02] tracking-[-0.045em] text-ink dark:text-paper sm:text-5xl">
               {course.title}
             </h1>
-            <p class="text-lg sm:text-xl leading-relaxed text-gray-600 dark:text-gray-300">
+            <p class="text-lg leading-8 text-muted dark:text-[#b8c5be] sm:text-xl">
               {course.summary}
             </p>
           </div>
@@ -66,7 +74,7 @@ const sectionLinks = [
             href={course.outlineUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex shrink-0 items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 px-5 py-3 font-semibold text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            class="brand-button-primary shrink-0"
           >
             View Waterloo outline ↗
           </a>
@@ -74,19 +82,19 @@ const sectionLinks = [
       </div>
     </header>
 
-    <div class="container mx-auto max-w-6xl px-4 py-10 sm:py-14">
-      <div class="rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/40 px-5 py-4 text-sm text-amber-900 dark:text-amber-100 mb-10">
-        This is a student-friendly summary of an archived outline, not a replacement for the current official outline, instructor announcements, or LEARN.
+    <div class="mx-auto max-w-6xl px-4 py-10 sm:py-14">
+      <div class="mb-10 rounded-xl border border-signal/70 bg-[#fff7d5] px-5 py-4 text-sm leading-6 text-ink dark:border-signal/50 dark:bg-[#332b12] dark:text-paper">
+        <strong class="font-black">Archived reference.</strong> This is a student-friendly summary, not a replacement for the current official outline, instructor announcements or LEARN.
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)] gap-10 lg:gap-14">
         <aside>
-          <nav aria-label="On this page" class="lg:sticky lg:top-24 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5">
-            <p class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">On this page</p>
+          <nav aria-label="On this page" class="brand-card p-5 lg:sticky lg:top-24">
+            <p class="mb-3 font-mono text-xs font-black uppercase tracking-[0.14em] text-spruce dark:text-lime">On this page</p>
             <ul class="space-y-2">
               {sectionLinks.map((link) => (
                 <li>
-                  <a href={`#${link.id}`} class="block rounded-md px-2 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-blue-300 transition-colors">
+                  <a href={`#${link.id}`} class="block rounded-md px-2 py-1.5 text-sm font-bold text-muted transition-colors hover:bg-[#e8ebe3] hover:text-spruce focus-visible:outline focus-visible:outline-3 focus-visible:outline-spruce dark:text-[#b8c5be] dark:hover:bg-night dark:hover:text-lime dark:focus-visible:outline-lime">
                     {link.label}
                   </a>
                 </li>
@@ -97,25 +105,25 @@ const sectionLinks = [
 
         <article class="min-w-0 space-y-14">
           <section id="overview" class="scroll-mt-28">
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Overview</h2>
-            <p class="text-lg leading-relaxed text-gray-600 dark:text-gray-300 mb-7">{course.overview}</p>
+            <h2 class="mb-4 text-3xl font-black tracking-[-0.035em] text-ink dark:text-paper">Overview</h2>
+            <p class="mb-7 text-lg leading-8 text-muted dark:text-[#b8c5be]">{course.overview}</p>
 
             <dl class="grid grid-cols-2 xl:grid-cols-4 gap-3">
               {course.highlights.map((highlight) => (
-                <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-4">
-                  <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">{highlight.label}</dt>
-                  <dd class="font-bold text-gray-900 dark:text-white">{highlight.value}</dd>
+                <div class="brand-card p-4">
+                  <dt class="mb-1 font-mono text-[0.65rem] font-black uppercase tracking-[0.1em] text-spruce dark:text-lime">{highlight.label}</dt>
+                  <dd class="font-black text-ink dark:text-paper">{highlight.value}</dd>
                 </div>
               ))}
             </dl>
           </section>
 
           <section id="topics" class="scroll-mt-28">
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-5">Core topics</h2>
+            <h2 class="mb-5 text-3xl font-black tracking-[-0.035em] text-ink dark:text-paper">Core topics</h2>
             <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
               {course.topics.map((topic) => (
-                <li class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 flex gap-3 text-gray-700 dark:text-gray-200">
-                  <span aria-hidden="true" class="mt-2 h-2 w-2 shrink-0 rounded-full bg-blue-600"></span>
+                <li class="brand-card flex gap-3 p-4 text-muted dark:text-[#b8c5be]">
+                  <span aria-hidden="true" class="mt-2 h-2 w-2 shrink-0 rounded-full bg-spruce dark:bg-lime"></span>
                   <span class="leading-relaxed">{topic}</span>
                 </li>
               ))}
@@ -123,11 +131,11 @@ const sectionLinks = [
           </section>
 
           <section id="outcomes" class="scroll-mt-28">
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-5">What you should learn</h2>
+            <h2 class="mb-5 text-3xl font-black tracking-[-0.035em] text-ink dark:text-paper">What you should learn</h2>
             <ol class="space-y-3">
               {course.outcomes.map((outcome, index) => (
-                <li class="flex gap-4 rounded-xl bg-blue-50 dark:bg-blue-950/40 p-4 text-gray-800 dark:text-gray-100">
-                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">{index + 1}</span>
+                <li class="flex gap-4 rounded-xl border border-sky bg-[#eaf8fc] p-4 text-ink dark:border-sky/30 dark:bg-[#112a30] dark:text-paper">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-spruce font-mono text-sm font-black text-white dark:bg-lime dark:text-ink">{index + 1}</span>
                   <span class="pt-1 leading-relaxed">{outcome}</span>
                 </li>
               ))}
@@ -135,42 +143,42 @@ const sectionLinks = [
           </section>
 
           <section id="grading" class="scroll-mt-28">
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-5">Grading breakdown</h2>
+            <h2 class="mb-5 text-3xl font-black tracking-[-0.035em] text-ink dark:text-paper">Grading breakdown</h2>
             <div class="space-y-6">
               {course.gradingSchemes.map((scheme) => (
-                <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
+                <div class="brand-card overflow-hidden">
                   {scheme.name && (
-                    <h3 class="bg-gray-100 dark:bg-gray-800 px-5 py-3 font-bold text-gray-900 dark:text-white">{scheme.name}</h3>
+                    <h3 class="border-b border-[#d7ddd6] bg-[#eef0e8] px-5 py-3 font-black text-ink dark:border-night-border dark:bg-night dark:text-paper">{scheme.name}</h3>
                   )}
                   <div class="overflow-x-auto">
                     <table class="w-full text-left">
-                      <thead class="bg-gray-50 dark:bg-gray-800 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                      <thead class="bg-[#f4f3ed] font-mono text-xs uppercase tracking-wider text-muted dark:bg-night-panel dark:text-[#aebdb4]">
                         <tr>
                           <th scope="col" class="px-5 py-3 font-semibold">Component</th>
                           <th scope="col" class="px-5 py-3 font-semibold">Weight</th>
                           <th scope="col" class="px-5 py-3 font-semibold">What it involved</th>
                         </tr>
                       </thead>
-                      <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+                      <tbody class="divide-y divide-[#d7ddd6] bg-panel dark:divide-night-border dark:bg-night">
                         {scheme.assessments.map((assessment) => (
                           <tr>
-                            <th scope="row" class="px-5 py-4 font-semibold text-gray-900 dark:text-white">{assessment.name}</th>
-                            <td class="px-5 py-4 whitespace-nowrap font-bold text-blue-700 dark:text-blue-300">{assessment.weight}</td>
-                            <td class="px-5 py-4 text-sm text-gray-600 dark:text-gray-300">{assessment.detail ?? "—"}</td>
+                            <th scope="row" class="px-5 py-4 font-bold text-ink dark:text-paper">{assessment.name}</th>
+                            <td class="whitespace-nowrap px-5 py-4 font-black text-spruce dark:text-lime">{assessment.weight}</td>
+                            <td class="px-5 py-4 text-sm text-muted dark:text-[#b8c5be]">{assessment.detail ?? "—"}</td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
-                  {scheme.note && <p class="border-t border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-blue-950/30 px-5 py-4 text-sm text-blue-900 dark:text-blue-100">{scheme.note}</p>}
+                  {scheme.note && <p class="border-t border-sky bg-[#eaf8fc] px-5 py-4 text-sm text-ink dark:border-sky/30 dark:bg-[#112a30] dark:text-paper">{scheme.note}</p>}
                 </div>
               ))}
             </div>
 
             {course.gradingNotes.length > 0 && (
-              <div class="mt-5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-5">
-                <h3 class="font-bold text-gray-900 dark:text-white mb-3">Important grading notes</h3>
-                <ul class="space-y-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+              <div class="brand-card mt-5 p-5">
+                <h3 class="mb-3 font-black text-ink dark:text-paper">Important grading notes</h3>
+                <ul class="space-y-2 text-sm leading-relaxed text-muted dark:text-[#b8c5be]">
                   {course.gradingNotes.map((note) => <li class="flex gap-3"><span aria-hidden="true">•</span><span>{note}</span></li>)}
                 </ul>
               </div>
@@ -178,11 +186,11 @@ const sectionLinks = [
           </section>
 
           <section id="workload" class="scroll-mt-28">
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-5">What the workload looked like</h2>
+            <h2 class="mb-5 text-3xl font-black tracking-[-0.035em] text-ink dark:text-paper">What the workload looked like</h2>
             <ul class="space-y-3">
               {course.workload.map((item) => (
-                <li class="flex gap-3 text-gray-600 dark:text-gray-300 leading-relaxed">
-                  <span aria-hidden="true" class="font-bold text-blue-600 dark:text-blue-400">✓</span>
+                <li class="flex gap-3 leading-relaxed text-muted dark:text-[#b8c5be]">
+                  <span aria-hidden="true" class="font-black text-spruce dark:text-lime">✓</span>
                   <span>{item}</span>
                 </li>
               ))}
@@ -190,21 +198,21 @@ const sectionLinks = [
           </section>
 
           <section id="materials" class="scroll-mt-28">
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-5">Materials and tools</h2>
+            <h2 class="mb-5 text-3xl font-black tracking-[-0.035em] text-ink dark:text-paper">Materials and tools</h2>
             <ul class="space-y-3">
               {course.materials.map((item) => (
-                <li class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 leading-relaxed text-gray-700 dark:text-gray-200">{item}</li>
+                <li class="brand-card p-4 leading-relaxed text-muted dark:text-[#b8c5be]">{item}</li>
               ))}
             </ul>
           </section>
 
           <section id="policies" class="scroll-mt-28">
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-5">Policies worth noticing</h2>
-            <div class="rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50/70 dark:bg-amber-950/30 p-5">
+            <h2 class="mb-5 text-3xl font-black tracking-[-0.035em] text-ink dark:text-paper">Policies worth noticing</h2>
+            <div class="rounded-xl border border-signal/70 bg-[#fff7d5] p-5 dark:border-signal/50 dark:bg-[#332b12]">
               <ul class="space-y-3">
                 {course.policies.map((policy) => (
-                  <li class="flex gap-3 leading-relaxed text-amber-950 dark:text-amber-100">
-                    <span aria-hidden="true" class="font-bold">!</span>
+                  <li class="flex gap-3 leading-relaxed text-ink dark:text-paper">
+                    <span aria-hidden="true" class="font-black text-spruce dark:text-lime">!</span>
                     <span>{policy}</span>
                   </li>
                 ))}
@@ -212,25 +220,25 @@ const sectionLinks = [
             </div>
           </section>
 
-          <section class="rounded-2xl bg-blue-600 p-6 sm:p-8 text-white">
-            <h2 class="text-2xl font-bold mb-3">Need the exact wording?</h2>
-            <p class="text-blue-100 mb-5">Open the archived Waterloo outline for full schedules, instructor information, administrative policies, and source details.</p>
-            <a href={course.outlineUrl} target="_blank" rel="noopener noreferrer" class="inline-flex rounded-lg bg-white px-5 py-3 font-semibold text-blue-700 hover:bg-blue-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+          <section class="blueprint-grid rounded-xl bg-spruce p-6 text-white sm:p-8">
+            <h2 class="mb-3 text-2xl font-black">Need the exact wording?</h2>
+            <p class="mb-5 text-[#e2eee8]">Open the archived Waterloo outline for full schedules, instructor information, administrative policies and source details.</p>
+            <a href={course.outlineUrl} target="_blank" rel="noopener noreferrer" class="brand-button-highlight focus-visible:outline-lime">
               Open full outline ↗
             </a>
           </section>
 
-          <nav aria-label="Other courses" class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-200 dark:border-gray-700 pt-8">
+          <nav aria-label="Other courses" class="grid grid-cols-1 gap-4 border-t border-[#cbd4cc] pt-8 dark:border-night-border sm:grid-cols-2">
             {previousCourse ? (
-              <a href={`${base}courses/${previousCourse.slug}`} class="rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
-                <span class="block text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Previous course</span>
-                <span class="font-bold text-gray-900 dark:text-white">← {previousCourse.code}</span>
+              <a href={`${base}courses/${previousCourse.slug}`} class="brand-card p-4 transition-colors hover:border-spruce focus-visible:outline focus-visible:outline-3 focus-visible:outline-spruce dark:hover:border-lime dark:focus-visible:outline-lime">
+                <span class="mb-1 block font-mono text-xs font-bold uppercase tracking-wider text-muted dark:text-[#aebdb4]">Previous course</span>
+                <span class="font-black text-ink dark:text-paper">← {previousCourse.code}</span>
               </a>
             ) : <span></span>}
             {nextCourse && (
-              <a href={`${base}courses/${nextCourse.slug}`} class="rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-right hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
-                <span class="block text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Next course</span>
-                <span class="font-bold text-gray-900 dark:text-white">{nextCourse.code} →</span>
+              <a href={`${base}courses/${nextCourse.slug}`} class="brand-card p-4 text-right transition-colors hover:border-spruce focus-visible:outline focus-visible:outline-3 focus-visible:outline-spruce dark:hover:border-lime dark:focus-visible:outline-lime">
+                <span class="mb-1 block font-mono text-xs font-bold uppercase tracking-wider text-muted dark:text-[#aebdb4]">Next course</span>
+                <span class="font-black text-ink dark:text-paper">{nextCourse.code} →</span>
               </a>
             )}
           </nav>

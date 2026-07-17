@@ -18,6 +18,7 @@ const { deadline, status: suppliedStatus } = Astro.props;
 const status = suppliedStatus ?? getDeadlineStatus(deadline);
 const isPast = status === "past";
 const isOngoing = status === "ongoing";
+const statusBorder = isPast ? "border-t-[#aab8ad]" : isOngoing ? "border-t-sky" : "border-t-signal";
 
 const categoryStyleMap: Record<string, { color: string; textColor: string }> = {
   academic: {
@@ -50,8 +51,8 @@ const categoryStyleMap: Record<string, { color: string; textColor: string }> = {
   },
 };
 
-const textColor = isPast ? "text-gray-700 dark:text-gray-300" : "text-gray-900 dark:text-gray-100";
-const descriptionColor = isPast ? "text-gray-600 dark:text-gray-400" : "text-gray-700 dark:text-gray-300";
+const textColor = isPast ? "text-muted dark:text-[#aebdb4]" : "text-ink dark:text-paper";
+const descriptionColor = "text-muted dark:text-[#b8c5be]";
 const categoryStyle = isPast
   ? { color: "bg-gray-200 dark:bg-gray-700", textColor: "text-gray-800 dark:text-gray-100" }
   : categoryStyleMap[deadline.category] ?? {
@@ -63,14 +64,14 @@ const categoryStyle = isPast
 const isCountdownEligible = deadline.deadlineType === 'action' && deadline.startDate.length > 10;
 ---
 
-<article class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md rounded-xl p-6 flex flex-col">
+<article class={`brand-card flex flex-col border-t-4 p-6 ${statusBorder}`}>
   <div class="flex justify-between items-start gap-4 mb-2">
-    <h3 class={`text-xl font-semibold ${textColor} min-w-0`}>
+    <h3 class={`min-w-0 text-xl font-black tracking-[-0.02em] ${textColor}`}>
       {deadline.title}
     </h3>
     <Badge text={deadline.category} color={categoryStyle.color} textColor={categoryStyle.textColor} />
   </div>
-  <p class={`text-sm mb-1 font-semibold ${descriptionColor}`}>
+  <p class={`mb-1 font-mono text-xs font-black uppercase tracking-[0.1em] ${descriptionColor}`}>
     {deadline.deadlineType === 'action' ? 'Action Required' : 'Event'}
   </p>
   <p class={`mb-4 ${descriptionColor}`}>
@@ -83,16 +84,16 @@ const isCountdownEligible = deadline.deadlineType === 'action' && deadline.start
   <p class="text-xs mb-4 text-gray-600 dark:text-gray-400">Applies to: {deadline.appliesTo}</p>
 
   <div class="mt-auto">
-    <p class="text-sm mb-2">
+    <p class="mb-2 text-sm">
       {deadline.sourceUrl ? (
-        <a href={deadline.sourceUrl} target="_blank" rel="noopener noreferrer" class="font-medium text-blue-700 dark:text-blue-300 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+        <a href={deadline.sourceUrl} target="_blank" rel="noopener noreferrer" class="brand-text-link font-black text-spruce dark:text-lime">
           {deadline.sourceLabel}
         </a>
       ) : (
         <span class="font-medium text-red-700 dark:text-red-300">Official source not provided</span>
       )}
     </p>
-    <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">
+    <p class="mb-3 font-mono text-[0.67rem] font-bold uppercase tracking-[0.08em] text-muted dark:text-[#aebdb4]">
       Last checked {formatTorontoDate(deadline.lastVerified)}
     </p>
     {isCountdownEligible && status === "upcoming" && (

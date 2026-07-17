@@ -4,37 +4,44 @@ import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import ResourceCard from "../components/ResourceCard.astro";
 import EmptyState from "../components/EmptyState.astro";
+import PageIntro from "../components/PageIntro.astro";
 import { RESOURCES } from "../data/resources";
 
 const base = import.meta.env.BASE_URL;
 
 const allCategories = Array.from(new Set(RESOURCES.map(r => r.category))).sort();
+const categoryId = (category: string) => `resources-${category.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 ---
 
-<Layout title="Resources - SE31 Hub" description="Curated resources for the SE31 cohort.">
+<Layout title="Resources - SE31 Build Log" description="Curated resources for the SE31 cohort.">
   <Navbar />
-  <main id="main-content" class="container mx-auto px-4 py-8" tabindex="-1">
-    <h1 class="text-4xl font-bold text-center mb-8">Cohort Resources</h1>
+  <main id="main-content" tabindex="-1">
+    <PageIntro
+      eyebrow="Links / curated"
+      title="Cohort resources."
+      description="A short, maintained index of the Waterloo services, academic references and practical tools worth keeping nearby."
+    >
+      <div class="mt-8 max-w-4xl rounded-xl border border-sky bg-[#eaf8fc] px-5 py-4 text-sm leading-6 text-ink dark:border-sky/40 dark:bg-[#112a30] dark:text-paper">
+        <strong class="font-black">Curated, not exhaustive.</strong> Verify important information with official sources. Have a link worth keeping? <a href={`${base}contribute`} class="brand-text-link font-black">Build it into the log.</a>
+      </div>
+    </PageIntro>
 
-    <div class="bg-blue-50 dark:bg-blue-950/50 border-l-4 border-blue-500 text-blue-950 dark:text-blue-100 p-4 mb-8">
-      <p class="font-bold">Notice:</p>
-      <p>This is a curated list. Please verify information with official sources. Want to add a valuable resource? <a href={`${base}contribute`} class="font-bold underline hover:text-blue-800 dark:hover:text-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Contribute on GitHub!</a></p>
+    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      {allCategories.length > 0 ? (
+        allCategories.map(category => (
+          <section class="mb-14 last:mb-0" aria-labelledby={categoryId(category)}>
+            <h2 id={categoryId(category)} class="mb-6 text-3xl font-black capitalize tracking-[-0.035em] text-ink dark:text-paper">{category}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {RESOURCES.filter(r => r.category === category).map(resource => (
+                <ResourceCard resource={resource} />
+              ))}
+            </div>
+          </section>
+        ))
+      ) : (
+        <EmptyState message="No resources available yet. Be the first to add some!" />
+      )}
     </div>
-
-    {allCategories.length > 0 ? (
-      allCategories.map(category => (
-        <section class="mb-12">
-          <h2 class="text-3xl font-bold mb-6 capitalize">{category}</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {RESOURCES.filter(r => r.category === category).map(resource => (
-              <ResourceCard resource={resource} />
-            ))}
-          </div>
-        </section>
-      ))
-    ) : (
-      <EmptyState message="No resources available yet. Be the first to add some!" />
-    )}
   </main>
   <Footer />
 </Layout>

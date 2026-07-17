@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import DeadlineCard from "../components/DeadlineCard.astro";
 import EmptyState from "../components/EmptyState.astro";
+import PageIntro from "../components/PageIntro.astro";
 import { DEADLINES } from "../data/deadlines";
 import { getDeadlineStartTime, getDeadlineStatus } from "../utils/date";
 
@@ -19,52 +20,58 @@ const pastDeadlines = DEADLINES.filter(d => getDeadlineStatus(d, now) === "past"
   .sort((a, b) => getDeadlineStartTime(b) - getDeadlineStartTime(a));
 ---
 
-<Layout title="Deadlines - SE31 Hub" description="Important public cohort deadlines for SE31.">
+<Layout title="Deadlines - SE31 Build Log" description="Important public cohort deadlines for SE31.">
   <Navbar />
-  <main id="main-content" class="container mx-auto px-4 py-8" tabindex="-1">
-    <h1 class="text-4xl font-bold text-center mb-8">Important Deadlines</h1>
+  <main id="main-content" tabindex="-1">
+    <PageIntro
+      eyebrow="Dates / source checked"
+      title="Important deadlines."
+      description="A public record of the dates that shape our transition into 1A, with the official source attached to every entry."
+    >
+      <div class="mt-8 max-w-4xl rounded-xl border border-signal/70 bg-[#fff7d5] px-5 py-4 text-sm leading-6 text-ink dark:border-signal/50 dark:bg-[#332b12] dark:text-paper">
+        <p class="font-black">Use the official source for final confirmation.</p>
+        <p>Every entry shows when its source was last checked. Deadline status is refreshed through a daily site build.</p>
+      </div>
+    </PageIntro>
 
-    <div class="bg-yellow-50 dark:bg-yellow-950/50 border-l-4 border-yellow-500 text-yellow-950 dark:text-yellow-100 p-4 mb-8">
-      <p class="font-bold">Use the official source for final confirmation.</p>
-      <p>Every entry shows when its source was last checked. Deadline status is refreshed through a daily site build.</p>
-    </div>
+    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      {ongoingDeadlines.length > 0 && (
+        <section class="mb-14" aria-labelledby="ongoing-heading">
+          <h2 id="ongoing-heading" class="mb-6 text-3xl font-black tracking-[-0.035em] text-ink dark:text-paper">Happening now</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {ongoingDeadlines.map((deadline) => (
+              <DeadlineCard deadline={deadline} status="ongoing" />
+            ))}
+          </div>
+        </section>
+      )}
 
-    {ongoingDeadlines.length > 0 && (
-      <section class="mb-12" aria-labelledby="ongoing-heading">
-        <h2 id="ongoing-heading" class="text-3xl font-bold mb-6">Happening Now</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {ongoingDeadlines.map((deadline) => (
-            <DeadlineCard deadline={deadline} status="ongoing" />
-          ))}
-        </div>
-      </section>
-    )}
-
-    <section class="mb-12" aria-labelledby="upcoming-heading">
-      <h2 id="upcoming-heading" class="text-3xl font-bold mb-6">Coming Up</h2>
-      {upcomingDeadlines.length > 0 ? (
+      <section class="mb-14" aria-labelledby="upcoming-heading">
+        <h2 id="upcoming-heading" class="mb-6 text-3xl font-black tracking-[-0.035em] text-ink dark:text-paper">Coming up</h2>
+        {upcomingDeadlines.length > 0 ? (
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {upcomingDeadlines.map((deadline) => (
             <DeadlineCard deadline={deadline} status="upcoming" />
           ))}
         </div>
-      ) : (
-        <EmptyState message="No upcoming deadlines at the moment. Check back soon!" />
-      )}
-    </section>
+        ) : (
+          <EmptyState message="No upcoming deadlines at the moment. Check back soon!" />
+        )}
+      </section>
 
-    <section aria-labelledby="past-heading">
-      <h2 id="past-heading" class="text-3xl font-bold mb-6">Archive</h2>
-      {pastDeadlines.length > 0 ? (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {pastDeadlines.map((deadline) => (
-            <DeadlineCard deadline={deadline} status="past" />
-          ))}
-        </div>
-      ) : (
-        <EmptyState message="No past deadlines to display." />
-      )}
-    </section>
+      <section aria-labelledby="past-heading">
+        <h2 id="past-heading" class="mb-6 text-3xl font-black tracking-[-0.035em] text-ink dark:text-paper">Archive</h2>
+        {pastDeadlines.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {pastDeadlines.map((deadline) => (
+              <DeadlineCard deadline={deadline} status="past" />
+            ))}
+          </div>
+        ) : (
+          <EmptyState message="No past deadlines to display." />
+        )}
+      </section>
+    </div>
   </main>
   <Footer />
 </Layout>

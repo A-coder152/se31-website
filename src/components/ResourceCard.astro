@@ -23,19 +23,19 @@ const categoryStyle = categoryStyleMap[resource.category] ?? {
 };
 ---
 
-<a href={resource.url} target="_blank" rel="noopener noreferrer" class="flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md rounded-xl p-6 hover:shadow-xl transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600">
+<a href={resource.url} target="_blank" rel="noopener noreferrer" class="brand-card group flex flex-col border-t-4 border-t-spruce p-6 transition-transform duration-200 hover:-translate-y-1 hover:border-spruce focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-spruce motion-reduce:transform-none motion-reduce:transition-none dark:border-t-lime dark:hover:border-lime dark:focus-visible:outline-lime">
   <div class="flex justify-between items-start mb-2">
-    <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mr-5 min-w-0">
+    <h3 class="mr-5 min-w-0 text-xl font-black tracking-[-0.02em] text-ink dark:text-paper">
       {resource.title}
     </h3>
     <Badge text={resource.category} color={categoryStyle.color} textColor={categoryStyle.textColor} />
   </div>
-  <p class="text-gray-600 dark:text-gray-300 mb-4 flex-grow">
+  <p class="mb-4 flex-grow leading-7 text-muted dark:text-[#b8c5be]">
     {resource.description}
   </p>
   {resource.official && (
     <div class="mt-2">
-      <Badge text="Official Waterloo source" color="bg-green-100 dark:bg-green-950" textColor="text-green-900 dark:text-green-200" />
+      <Badge text="Official Waterloo source" color="bg-[#d8eee5] dark:bg-[#163a2e]" textColor="text-spruce dark:text-[#a9e8cc]" />
     </div>
   )}
 </a>

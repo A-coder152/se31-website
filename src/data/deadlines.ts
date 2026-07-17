@@ -269,7 +269,7 @@ export const DEADLINES: Deadline[] = [
     deadlineType: "event",
     appliesTo: "Students completing a co-op work term",
     description: "Spring 2027 co-op work term.",
-    sourceLabel: "The Centre — 2026–27 co-op work term dates",
+    sourceLabel: "The Centre — Academic and co-op term dates",
     sourceUrl: "https://uwaterloo.ca/the-centre/awards-and-financial-aid/osap-ontario-student-assistance-program/osap-deadlines-and-important-dates",
     verified: true,
     lastVerified: "2026-07-16",

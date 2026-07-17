@@ -27,3 +27,8 @@ test("site ownership points to the canonical AdvancedForge locations", () => {
   assert.equal(SITE_CONFIG.githubUrl, "https://github.com/AdvancedForge/se31-website");
   assert.equal(SITE_CONFIG.siteUrl, "https://advancedforge.github.io/se31-website/");
 });
+
+test("site identity uses the SE31 Build Log brand", () => {
+  assert.equal(SITE_CONFIG.siteTitle, "SE31 Build Log");
+  assert.equal(SITE_CONFIG.tagline, "Built together. Kept useful.");
+});

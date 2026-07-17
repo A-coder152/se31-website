@@ -1,14 +1,39 @@
 @import "tailwindcss";
 
 @theme {
-  --color-dark-bg: #111827;
-  --color-dark-text: #f9fafb;
+  --color-ink: #10211b;
+  --color-paper: #f7f5ed;
+  --color-panel: #fffef9;
+  --color-spruce: #0b6b4d;
+  --color-lime: #d8ff3e;
+  --color-sky: #bce9f7;
+  --color-signal: #f8c84a;
+  --color-muted: #53655d;
+  --color-night: #0b1512;
+  --color-night-panel: #14211d;
+  --color-night-border: #34483e;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 
 /* Force dark mode class usage in Tailwind v4 */
 @variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  html {
+    font-family: var(--font-sans);
+    color-scheme: light dark;
+  }
+
+  body {
+    background: var(--color-paper);
+  }
+
+  ::selection {
+    background: var(--color-lime);
+    color: var(--color-ink);
+  }
+
   html.theme-transition-ready *,
   html.theme-transition-ready *::before,
   html.theme-transition-ready *::after {
@@ -24,5 +49,134 @@
     html.theme-transition-ready *::after {
       transition-duration: 0ms;
     }
+  }
+}
+
+@layer components {
+  .blueprint-grid {
+    background-image:
+      linear-gradient(rgb(216 255 62 / 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(216 255 62 / 0.08) 1px, transparent 1px);
+    background-position: center;
+    background-size: 28px 28px;
+  }
+
+  .paper-grid {
+    background-image:
+      linear-gradient(rgb(16 33 27 / 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(16 33 27 / 0.045) 1px, transparent 1px);
+    background-position: center;
+    background-size: 32px 32px;
+  }
+
+  .dark .paper-grid {
+    background-image:
+      linear-gradient(rgb(216 255 62 / 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(216 255 62 / 0.045) 1px, transparent 1px);
+  }
+
+  .brand-card {
+    border: 1px solid #d7ddd6;
+    border-radius: 0.75rem;
+    background: var(--color-panel);
+    box-shadow: 0 8px 24px rgb(16 33 27 / 0.06);
+  }
+
+  .dark .brand-card {
+    border-color: var(--color-night-border);
+    background: var(--color-night-panel);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+  }
+
+  .brand-button-primary,
+  .brand-button-highlight,
+  .brand-button-secondary {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.625rem;
+    padding: 0.7rem 1.1rem;
+    font-weight: 750;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease,
+      transform 160ms ease;
+  }
+
+  .brand-button-primary {
+    background: var(--color-spruce);
+    color: white;
+  }
+
+  .brand-button-primary:hover {
+    background: #07553e;
+    transform: translateY(-1px);
+  }
+
+  .brand-button-highlight {
+    background: var(--color-lime);
+    color: var(--color-ink);
+  }
+
+  .brand-button-highlight:hover {
+    background: #e4ff75;
+    transform: translateY(-1px);
+  }
+
+  .brand-button-secondary {
+    border: 1px solid currentColor;
+    color: var(--color-ink);
+  }
+
+  .dark .brand-button-secondary {
+    color: var(--color-paper);
+  }
+
+  .brand-button-secondary:hover {
+    background: rgb(16 33 27 / 0.06);
+    transform: translateY(-1px);
+  }
+
+  .dark .brand-button-secondary:hover {
+    background: rgb(247 245 237 / 0.08);
+  }
+
+  .brand-button-primary:focus-visible,
+  .brand-button-highlight:focus-visible,
+  .brand-button-secondary:focus-visible,
+  .brand-text-link:focus-visible {
+    outline: 3px solid var(--color-spruce);
+    outline-offset: 3px;
+  }
+
+  .dark .brand-button-primary:focus-visible,
+  .dark .brand-button-highlight:focus-visible,
+  .dark .brand-button-secondary:focus-visible,
+  .dark .brand-text-link:focus-visible {
+    outline-color: var(--color-lime);
+  }
+
+  .brand-text-link {
+    text-decoration-color: var(--color-lime);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.25rem;
+  }
+
+  .brand-text-link:hover {
+    text-decoration-line: underline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-button-primary,
+  .brand-button-highlight,
+  .brand-button-secondary {
+    transition-duration: 0ms;
+  }
+
+  .brand-button-primary:hover,
+  .brand-button-highlight:hover,
+  .brand-button-secondary:hover {
+    transform: none;
   }
 }

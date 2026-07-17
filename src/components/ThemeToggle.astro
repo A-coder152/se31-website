@@ -4,21 +4,29 @@
 <button
   id="theme-toggle"
   type="button"
-  class="min-h-11 min-w-11 p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+  class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-[#aab8ad] text-ink transition-colors hover:bg-[#e8ebe3] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-spruce dark:border-night-border dark:text-paper dark:hover:bg-night-panel dark:focus-visible:outline-lime"
   aria-label="Switch colour theme"
 >
-  <span id="theme-icon" aria-hidden="true">🌓</span>
+  <svg id="theme-icon-moon" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.7 6.7 0 0 0 21 12.8Z" />
+  </svg>
+  <svg id="theme-icon-sun" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41" />
+  </svg>
 </button>
 
 <script is:inline>
   const themeToggle = document.getElementById("theme-toggle");
-  const themeIcon = document.getElementById("theme-icon");
+  const moonIcon = document.getElementById("theme-icon-moon");
+  const sunIcon = document.getElementById("theme-icon-sun");
 
   const syncThemeControl = () => {
     const isDark = document.documentElement.classList.contains("dark");
     themeToggle?.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
     themeToggle?.setAttribute("title", isDark ? "Switch to light theme" : "Switch to dark theme");
-    if (themeIcon) themeIcon.textContent = isDark ? "☀️" : "🌙";
+    moonIcon?.classList.toggle("hidden", isDark);
+    sunIcon?.classList.toggle("hidden", !isDark);
   };
 
   syncThemeControl();

@@ -8,8 +8,8 @@ export interface SiteConfig {
 }
 
 export const SITE_CONFIG: SiteConfig = {
-  siteTitle: "SE31 Hub",
-  tagline: "Built by SE31, for SE31.",
+  siteTitle: "SE31 Build Log",
+  tagline: "Built together. Kept useful.",
   siteUrl: "https://advancedforge.github.io/se31-website/",
   githubUrl: "https://github.com/AdvancedForge/se31-website",
   discordUrl: undefined, // Optional: "https://discord.gg/your-invite"

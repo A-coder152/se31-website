@@ -1,36 +1,48 @@
 ---
 import { SITE_CONFIG } from "../data/siteConfig";
+import BrandMark from "./BrandMark.astro";
 
 const currentYear = new Date().getFullYear();
+const base = import.meta.env.BASE_URL;
 ---
 
-<footer class="mt-auto bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-  <div class="container mx-auto p-4 text-center text-sm">
-    <p class="mb-2 text-gray-600 dark:text-gray-300">
-      {SITE_CONFIG.disclaimer}
-    </p>
+<footer class="mt-auto border-t-4 border-lime bg-ink text-paper">
+  <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div class="grid gap-8 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div class="max-w-md">
+        <div class="flex items-center gap-3">
+          <BrandMark class="h-11 w-11" />
+          <div>
+            <p class="text-lg font-black tracking-[-0.03em]">SE31 Build Log</p>
+            <p class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.16em] text-lime">Built together. Kept useful.</p>
+          </div>
+        </div>
+        <p class="mt-5 text-sm leading-6 text-[#c8d2cc]">{SITE_CONFIG.disclaimer}</p>
+      </div>
 
-    <p class="mb-2 text-gray-700 dark:text-gray-200">
-      &copy; {currentYear} SE31 Hub contributors · MIT licensed.
-    </p>
+      <div>
+        <p class="font-mono text-xs font-bold uppercase tracking-[0.16em] text-lime">Navigate</p>
+        <ul class="mt-4 space-y-2 text-sm">
+          <li><a class="brand-text-link focus-visible:outline-lime" href={`${base}courses`}>Courses</a></li>
+          <li><a class="brand-text-link focus-visible:outline-lime" href={`${base}deadlines`}>Deadlines</a></li>
+          <li><a class="brand-text-link focus-visible:outline-lime" href={`${base}timetable`}>Timetable</a></li>
+          <li><a class="brand-text-link focus-visible:outline-lime" href={`${base}resources`}>Resources</a></li>
+        </ul>
+      </div>
 
-    <p class="flex flex-wrap justify-center gap-x-4 gap-y-1">
-      <a
-        href={SITE_CONFIG.githubUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-blue-600 dark:text-blue-400 hover:underline"
-      >
-        Contribute on GitHub
-      </a>
-      <a
-        href={`${SITE_CONFIG.githubUrl}/blob/main/LICENSE`}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-blue-700 dark:text-blue-300 hover:underline"
-      >
-        View license
-      </a>
-    </p>
+      <div>
+        <p class="font-mono text-xs font-bold uppercase tracking-[0.16em] text-lime">Build record</p>
+        <ul class="mt-4 space-y-2 text-sm">
+          <li><a class="brand-text-link focus-visible:outline-lime" href={`${base}contribute`}>Build with us</a></li>
+          <li><a class="brand-text-link focus-visible:outline-lime" href={SITE_CONFIG.githubUrl} target="_blank" rel="noopener noreferrer">View the code ↗</a></li>
+          <li><a class="brand-text-link focus-visible:outline-lime" href={`${SITE_CONFIG.githubUrl}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer">MIT licence ↗</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-2 border-t border-[#405048] pt-5 text-xs text-[#b8c5be] sm:flex-row sm:items-center sm:justify-between">
+      <p>&copy; {currentYear} SE31 Build Log contributors.</p>
+      <p class="font-mono uppercase tracking-[0.12em]">Maintained by students · Sources linked</p>
+    </div>
   </div>
 </footer>
