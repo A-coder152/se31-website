@@ -8,7 +8,7 @@ import { SITE_CONFIG } from "../data/siteConfig";
 import { COURSES } from "../data/courses";
 import { DEADLINES } from "../data/deadlines";
 import { RESOURCES } from "../data/resources";
-import { TIMETABLE, TIMETABLE_META } from "../data/timetable";
+import { SECTION_GROUPS, SPECIAL_MEETINGS, TIMETABLE_META } from "../data/timetable";
 import {
   formatTorontoDate,
   formatTorontoDateTime,
@@ -25,7 +25,7 @@ const currentDeadlines = DEADLINES
 
 const nextMilestone = currentDeadlines.find((deadline) => deadline.deadlineType === "event");
 const nextAction = currentDeadlines.find((deadline) => deadline.deadlineType === "action");
-const missingLocationCount = TIMETABLE.filter((event) => !event.location).length;
+
 
 const shortcutDefinitions = [
   {
@@ -58,7 +58,7 @@ const officialShortcuts = shortcutDefinitions.flatMap((definition) => {
 
 <Layout
   title="SE31 Nest — Waterloo Software Engineering 2031"
-  description="A student-built home for Waterloo Software Engineering 2031: current dates, 1A course guides, an unofficial timetable, and trusted links."
+  description="A student-built home for Waterloo Software Engineering 2031: current dates, 1A course guides, a section-aware Fall 2026 timetable, and trusted links."
 >
   <Navbar />
   <main id="main-content" tabindex="-1">
@@ -72,7 +72,7 @@ const officialShortcuts = shortcutDefinitions.flatMap((definition) => {
             Everything SE31 needs, in one place.
           </h1>
           <p class="mt-6 max-w-2xl text-lg font-medium leading-8 sm:text-xl">
-            Courses, dates, a draft timetable and the Waterloo links we keep reaching for—maintained by the cohort and clear about what is official.
+            Courses, dates, a section-aware timetable and the Waterloo links we keep reaching for—maintained by the cohort and clear about what is official.
           </p>
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
             <a href="#now" class="brand-button-primary">See what’s next <span aria-hidden="true">↓</span></a>
@@ -156,14 +156,14 @@ const officialShortcuts = shortcutDefinitions.flatMap((definition) => {
 
           <NowCard
             label="Timetable status"
-            title={`${TIMETABLE_META.term} planning timetable`}
+            title={`${TIMETABLE_META.term} section-aware timetable`}
             href={`${base}timetable`}
-            linkLabel="View the draft"
+            linkLabel="Choose my sections"
             tone="amber"
           >
             <p>{TIMETABLE_META.notice}</p>
             <p slot="meta" class="text-xs font-semibold text-muted dark:text-paper/70">
-              {missingLocationCount} of {TIMETABLE.length} locations unconfirmed · Checked {formatTorontoDate(TIMETABLE_META.lastChecked)}
+              {SECTION_GROUPS.length} customizable components · {SPECIAL_MEETINGS.length} dated meetings · Checked {formatTorontoDate(TIMETABLE_META.lastChecked)}
             </p>
           </NowCard>
         </div>
