@@ -10,7 +10,7 @@ There are many ways you can contribute to this project:
     *   **Deadlines:** Add new important dates or update existing ones in `src/data/deadlines.ts`.
     *   **Resources:** Add useful links (academic, co-op, student life, dev tools) in `src/data/resources.ts`.
     *   **Courses:** Correct or clarify archived course guides in `src/data/courses.ts` without changing the source meaning.
-    *   **Timetable:** Update the clearly labelled planning draft in `src/data/timetable.ts` as official information becomes available.
+    *   **Timetable:** Update recurring, section-specific, or dated meetings in `src/data/timetable.ts` only from official listings or verified Quest rows; never include student-identifying information.
 2.  **Improve Features:** Enhance existing features or propose new ones.
 3.  **Fix Bugs:** Help us identify and resolve issues.
 4.  **Improve Design/Accessibility:** Make the site more visually appealing and user-friendly.

@@ -3,216 +3,551 @@ import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import PageIntro from "../components/PageIntro.astro";
-import { TIMETABLE, TIMETABLE_META } from "../data/timetable";
+import {
+  SECTION_GROUPS,
+  SPECIAL_MEETINGS,
+  TIMETABLE,
+  TIMETABLE_META,
+  UNSCHEDULED_COURSES,
+  type SectionGroupKey,
+  type Weekday,
+} from "../data/timetable";
 import { formatTorontoDate } from "../utils/date";
 
-const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const days: Weekday[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const timeChangingGroup = SECTION_GROUPS.find((group) => group.impact === "time");
+const roomGroups = SECTION_GROUPS.filter((group) => group.impact === "room");
 
 const START = 8 * 60 + 30;
 const SLOT_HEIGHT = 40;
 function toMinutes(time: string) {
-	const [h, m] = time.split(":").map(Number);
-	return h * 60 + m;
+  const [h, m] = time.split(":").map(Number);
+  return h * 60 + m;
 }
 
 function top(time: string) {
-	return ((toMinutes(time) - START) / 30) * SLOT_HEIGHT;
+  return ((toMinutes(time) - START) / 30) * SLOT_HEIGHT;
 }
 
 function height(start: string, end: string) {
-	return ((toMinutes(end) - toMinutes(start)) / 30) * SLOT_HEIGHT;
+  return ((toMinutes(end) - toMinutes(start)) / 30) * SLOT_HEIGHT;
 }
 
-const times = Array.from({ length: 19 }, (_, i) => {
-	const mins = START + i * 30;
-	const h = Math.floor(mins / 60);
-	const m = mins % 60;
-	return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+const times = Array.from({ length: 19 }, (_, index) => {
+  const minutes = START + index * 30;
+  const hour = Math.floor(minutes / 60);
+  const minute = minutes % 60;
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
 });
 
-const missingLocationCount = TIMETABLE.filter((event) => !event.location).length;
+const specialMeetingsByMonth = SPECIAL_MEETINGS.reduce(
+  (groups, meeting) => {
+    const month = meeting.date.slice(0, 7);
+    (groups[month] ??= []).push(meeting);
+    return groups;
+  },
+  {} as Record<string, (typeof SPECIAL_MEETINGS)[number][]>,
+);
+
+function formatMonth(month: string) {
+  return new Date(`${month}-15T12:00:00-04:00`).toLocaleDateString("en-CA", {
+    timeZone: "America/Toronto",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function isRoomChoice(group: SectionGroupKey | undefined) {
+  return roomGroups.some((candidate) => candidate.key === group);
+}
 ---
 
-<Layout title={`${TIMETABLE_META.term} timetable — SE31 Nest`} description="An unofficial Fall 2026 planning draft for incoming SE31 students, with Quest linked as the current official source.">
-	<Navbar />
+<Layout
+  title={`${TIMETABLE_META.term} timetable — SE31 Nest`}
+  description="The section-aware Fall 2026 SE31 timetable, with a typical week, tutorial room choices, and dated tests or additional meetings."
+>
+  <Navbar />
 
-	<main id="main-content" tabindex="-1">
-		<PageIntro
-			eyebrow={`Timetable · ${TIMETABLE_META.status}`}
-			title={`${TIMETABLE_META.term} weekly timetable.`}
-			description={TIMETABLE_META.audience}
-		>
-			<div class="quiet-note mt-7 max-w-4xl text-sm leading-6">
-				<p class="font-bold">Unofficial schedule — do not rely on it yet.</p>
-				<p>{TIMETABLE_META.notice}</p>
-				<p class="mt-3 text-xs font-bold">
-					{missingLocationCount} of {TIMETABLE.length} locations unconfirmed · Last checked {formatTorontoDate(TIMETABLE_META.lastChecked)} ·
-					{" "}<a href={TIMETABLE_META.sourceUrl} target="_blank" rel="noopener noreferrer" class="brand-text-link">{TIMETABLE_META.sourceLabel}</a>
-				</p>
-			</div>
-		</PageIntro>
+  <main id="main-content" tabindex="-1">
+    <PageIntro
+      eyebrow={`Timetable · ${TIMETABLE_META.status}`}
+      title={`Your ${TIMETABLE_META.term} timetable, section by section.`}
+      description={TIMETABLE_META.audience}
+    >
+      <div class="quiet-note mt-7 max-w-4xl text-sm leading-6">
+        <p class="font-bold">Official schedule released — your assigned sections still matter.</p>
+        <p>{TIMETABLE_META.notice}</p>
+        <p class="mt-3 text-xs font-bold">
+          {SECTION_GROUPS.length} customizable components · {SPECIAL_MEETINGS.length} dated meetings separated from the weekly grid · Last checked {formatTorontoDate(TIMETABLE_META.lastChecked)}
+        </p>
+        <p class="mt-2 text-xs font-bold">
+          <a href={TIMETABLE_META.sourceUrl} target="_blank" rel="noopener noreferrer" class="brand-text-link">{TIMETABLE_META.sourceLabel}</a>
+          <span aria-hidden="true"> · </span>
+          <a href={TIMETABLE_META.personalSourceUrl} target="_blank" rel="noopener noreferrer" class="brand-text-link">{TIMETABLE_META.personalSourceLabel}</a>
+        </p>
+      </div>
+    </PageIntro>
 
-		<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-			<section aria-labelledby="agenda-heading" class="lg:sr-only">
-				<h2 id="agenda-heading" class="mb-4 text-2xl font-bold">Daily agenda</h2>
-				<div class="space-y-6">
-					{days.map((day) => (
-						<section aria-labelledby={`agenda-${day.toLowerCase()}`}>
-							<h3 id={`agenda-${day.toLowerCase()}`} class="mb-2 text-xl font-bold">{day}</h3>
-							<ol class="cozy-panel divide-y divide-teal-deep/10 overflow-hidden dark:divide-sky/15">
-								{TIMETABLE.filter((event) => event.day === day).map((event) => (
-									<li class="p-4 sm:p-5">
-										<strong class:list={["inline-flex rounded-lg border px-2.5 py-1 text-sm font-bold", event.color]}>
-											{event.course} {event.type}
-										</strong>
-										<p class="mt-1 text-sm">
-											<time datetime={event.start}>{event.start}</time>–<time datetime={event.end}>{event.end}</time>
-											<span aria-hidden="true"> · </span>
-											<span>{event.location || "Location not confirmed"}</span>
-										</p>
-									</li>
-								))}
-							</ol>
-						</section>
-					))}
-				</div>
-			</section>
+    <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+      <section class="cozy-panel mb-8 p-4 sm:p-5" aria-labelledby="schedule-controls-heading" data-schedule-ui hidden>
+        <div class="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+          <div>
+            <h2 id="schedule-controls-heading" class="text-xl font-bold">Shape the timetable</h2>
+            <p class="mt-1 max-w-2xl text-sm leading-6 text-muted dark:text-paper/70">
+              Section choices stay on this device. A copied link contains section codes only—never a name or account.
+            </p>
+          </div>
 
-		<div class="hidden overflow-x-auto rounded-3xl border border-teal-deep/15 bg-feather lg:block dark:border-sky/20 dark:bg-night" aria-hidden="true">
-			<div
-				class="
-					grid
-					min-w-[930px]
-					grid-cols-[80px_repeat(5,minmax(170px,1fr))]
-					grid-rows-[44px_auto]
-					border-0
-					bg-feather
-					dark:bg-night
-				"
-			>
-				<div class="border-b border-r border-teal-deep/15 bg-soft-teal dark:border-sky/15 dark:bg-night-panel"></div>
+          <div class="flex flex-col gap-4 sm:flex-row">
+            <fieldset>
+              <legend class="mb-1 text-xs font-bold text-muted dark:text-paper/70">Schedule</legend>
+              <div class="flex min-h-11 rounded-xl bg-soft-teal p-1 dark:bg-night">
+                <label class="flex cursor-pointer items-center gap-2 rounded-lg px-3 text-sm font-bold">
+                  <input type="radio" name="schedule-mode" value="cohort" data-schedule-mode class="accent-hardhat" checked />
+                  Cohort overview
+                </label>
+                <label class="flex cursor-pointer items-center gap-2 rounded-lg px-3 text-sm font-bold">
+                  <input type="radio" name="schedule-mode" value="personal" data-schedule-mode class="accent-hardhat" />
+                  My sections
+                </label>
+              </div>
+            </fieldset>
 
-				{
-					days.map(day => (
-						<div
-							class="
-								flex
-								h-11
-								items-center
-								justify-center
-								border-b
-								border-l
-								border-teal-deep/15
-								bg-pond
-								font-bold
-								text-brown
-								dark:border-sky/15
-								dark:bg-pond-deep
-								dark:text-brown
-							"
-						>
-							{day}
-						</div>
-					))
-				}
+            <fieldset>
+              <legend class="mb-1 text-xs font-bold text-muted dark:text-paper/70">View</legend>
+              <div class="flex min-h-11 rounded-xl bg-soft-teal p-1 dark:bg-night">
+                <label class="flex cursor-pointer items-center gap-2 rounded-lg px-3 text-sm font-bold">
+                  <input type="radio" name="content-view" value="typical" data-content-view class="accent-hardhat" checked />
+                  Typical week
+                </label>
+                <label class="flex cursor-pointer items-center gap-2 rounded-lg px-3 text-sm font-bold">
+                  <input type="radio" name="content-view" value="dated" data-content-view class="accent-hardhat" />
+                  Dated meetings ({SPECIAL_MEETINGS.length})
+                </label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
 
-				<div class="flex flex-col bg-feather text-brown dark:bg-night-panel dark:text-feather">
-					{
-						times.map(time => (
-							<div
-								class="
-									flex
-									h-10
-									items-center
-									justify-center
-									border-b
-									border-r
-									border-teal-deep/10
-									text-sm
-									dark:border-sky/10
-								"
-							>
-								{time}
-							</div>
-						))
-					}
-				</div>
+        <div class="mt-5 border-t border-teal-deep/10 pt-5 dark:border-sky/15" data-personal-controls hidden>
+          {timeChangingGroup && (
+            <label class="block max-w-xl">
+              <span class="text-sm font-bold">{timeChangingGroup.course} {timeChangingGroup.type}</span>
+              <span class="mt-1 block text-xs text-muted dark:text-paper/70">This is the choice that changes your weekly layout.</span>
+              <select
+                class="mt-2 min-h-11 w-full rounded-xl border border-teal-deep/25 bg-feather px-3 text-sm text-ink focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brown dark:border-sky/25 dark:bg-night dark:text-paper dark:focus-visible:outline-hardhat"
+                data-section-select
+                data-section-group={timeChangingGroup.key}
+                data-query-param={timeChangingGroup.queryParam}
+              >
+                <option value="">{timeChangingGroup.defaultLabel}</option>
+                {timeChangingGroup.options.map((option) => (
+                  <option value={option.value} data-room={option.room} data-section-label={option.value}>
+                    {option.label} · {option.meeting} · {option.room}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
-				{
-					days.map(day => (
-						<div
-							class="
-								relative
-								flex
-								flex-col
-								border-l
-								border-teal-deep/12
-								bg-feather
-								dark:border-sky/15
-								dark:bg-night
-							"
-						>
-							{
-								times.map(() => (
-									<div
-										class="
-											h-10
-											border-b
-											border-teal-deep/8
-											box-border
-											dark:border-sky/10
-										"
-									></div>
-								))
-							}
+          <details class="mt-5 border-t border-teal-deep/10 pt-4 dark:border-sky/15">
+            <summary class="min-h-11 cursor-pointer py-2 text-sm font-bold">Tutorial rooms · {roomGroups.length} optional</summary>
+            <p class="mb-4 max-w-2xl text-xs leading-5 text-muted dark:text-paper/70">
+              These tutorials happen at the same time for everyone; choosing a section only fills in its room. MATH 135 currently includes TUT 101 only, so other sections still point back to Quest.
+            </p>
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {roomGroups.map((group) => (
+                <label class="block">
+                  <span class="text-sm font-bold">{group.course} {group.type}</span>
+                  <select
+                    class="mt-2 min-h-11 w-full rounded-xl border border-teal-deep/25 bg-feather px-3 text-sm text-ink focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brown dark:border-sky/25 dark:bg-night dark:text-paper dark:focus-visible:outline-hardhat"
+                    data-section-select
+                    data-section-group={group.key}
+                    data-query-param={group.queryParam}
+                  >
+                    <option value="">{group.defaultLabel}</option>
+                    {group.options.map((option) => (
+                      <option value={option.value} data-room={option.room} data-section-label={option.value}>
+                        {option.label} · {option.room}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ))}
+            </div>
+          </details>
 
-							{
-								TIMETABLE
-									.filter(e => e.day === day)
-									.map(event => (
-										<div
-											class:list={[
-												`
-													absolute
-													left-[1px]
-													right-[1px]
-													z-[5]
-													box-border
-													flex
-													flex-col
-													justify-center
-												overflow-hidden
-												rounded-lg
-												border
-													px-2
-													py-1
-													text-[0.8rem]
-													leading-tight
-												`,
-											event.color,
-											]}
-											style={`
-												top:${top(event.start)}px;
-												height:${height(event.start, event.end)}px;
-											`}
-										>
-											<div class="mb-1 font-bold">
-											{event.course} {event.type}
-										</div>
+          <div class="mt-5 flex flex-col gap-3 border-t border-teal-deep/10 pt-4 sm:flex-row sm:items-center dark:border-sky/15">
+            <button type="button" class="brand-button-highlight" data-copy-link>Copy timetable link</button>
+            <button type="button" class="brand-button-primary" data-use-shared hidden>Use these sections</button>
+            <button type="button" class="brand-button-secondary" data-reset-sections>Reset sections</button>
+            <p class="text-xs font-semibold text-muted dark:text-paper/70" role="status" aria-live="polite" data-section-status></p>
+          </div>
+        </div>
+      </section>
 
-											<div class="mt-0.5 text-[0.72rem] font-semibold">
-												{event.location || "Location TBD"}
-											</div>
-										</div>
-									))
-							}
-						</div>
-					))
-				}
-			</div>
-		</div>
-		</div>
-	</main>
+      <div class="quiet-note mb-6 text-sm leading-6" data-cohort-note>
+        <strong>Both SE31 MATH 135 lecture options are shown.</strong> Each student attends either LEC 011 after MATH 115 or LEC 012 at 8:30—not both.
+      </div>
 
-	<Footer />
+      <section data-view-panel="typical" aria-labelledby="typical-week-heading">
+        <div class="mb-5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-sm font-bold text-teal-deep dark:text-sky">Recurring classes</p>
+            <h2 id="typical-week-heading" class="text-2xl font-bold">Typical week</h2>
+          </div>
+          <p class="text-xs font-semibold text-muted dark:text-paper/70">One-off tests and changed times are listed separately.</p>
+        </div>
+
+        <section aria-labelledby="agenda-heading" class="lg:sr-only">
+          <h3 id="agenda-heading" class="sr-only">Daily agenda</h3>
+          <div class="cozy-panel overflow-hidden divide-y divide-teal-deep/10 dark:divide-sky/15">
+            {days.map((day) => (
+              <section aria-labelledby={`agenda-${day.toLowerCase()}`} class="p-4 sm:p-5">
+                <h4 id={`agenda-${day.toLowerCase()}`} class="mb-3 text-lg font-bold">{day}</h4>
+                <ol class="divide-y divide-teal-deep/10 dark:divide-sky/15">
+                  {TIMETABLE.filter((event) => event.day === day).map((event) => (
+                    <li
+                      class="grid grid-cols-[4.8rem_1fr] gap-3 py-3 first:pt-0 last:pb-0"
+                      data-section-group={event.sectionGroup}
+                      data-section-value={event.sectionValue}
+                    >
+                      <p class="text-sm font-semibold leading-5">
+                        <time datetime={event.start}>{event.start}</time><br />
+                        <span class="text-xs text-muted dark:text-paper/65">to {event.end}</span>
+                      </p>
+                      <div class="min-w-0">
+                        <strong class:list={["inline-flex flex-wrap items-center gap-1 rounded-lg border px-2.5 py-1 text-sm font-bold", event.color]}>
+                          {event.course} {event.type}{event.section ? ` ${event.section}` : ""}
+                          {isRoomChoice(event.sectionGroup) && <span data-section-label-group={event.sectionGroup}></span>}
+                          {event.sectionGroup === "math135Lec" && <span class="text-[0.65rem] font-bold opacity-70">one of two</span>}
+                        </strong>
+                        <p class="mt-1 text-sm">
+                          <span
+                            data-section-room-group={isRoomChoice(event.sectionGroup) ? event.sectionGroup : undefined}
+                            data-default-room={event.location}
+                          >{event.location}</span>
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            ))}
+          </div>
+        </section>
+
+        <div class="hidden overflow-x-auto rounded-3xl border border-teal-deep/15 bg-feather lg:block dark:border-sky/20 dark:bg-night" aria-hidden="true">
+          <div class="grid min-w-[930px] grid-cols-[80px_repeat(5,minmax(170px,1fr))] grid-rows-[44px_auto] bg-feather dark:bg-night">
+            <div class="border-b border-r border-teal-deep/15 bg-soft-teal dark:border-sky/15 dark:bg-night-panel"></div>
+
+            {days.map((day) => (
+              <div class="flex h-11 items-center justify-center border-b border-l border-teal-deep/15 bg-pond font-bold text-brown dark:border-sky/15 dark:bg-pond-deep dark:text-brown">
+                {day}
+              </div>
+            ))}
+
+            <div class="flex flex-col bg-feather text-brown dark:bg-night-panel dark:text-feather">
+              {times.map((time) => (
+                <div class="flex h-10 items-center justify-center border-b border-r border-teal-deep/10 text-sm dark:border-sky/10">{time}</div>
+              ))}
+            </div>
+
+            {days.map((day) => (
+              <div class="relative flex flex-col border-l border-teal-deep/12 bg-feather dark:border-sky/15 dark:bg-night">
+                {times.map(() => <div class="box-border h-10 border-b border-teal-deep/8 dark:border-sky/10"></div>)}
+
+                {TIMETABLE.filter((event) => event.day === day).map((event) => (
+                  <div
+                    class:list={[
+                      "absolute left-[1px] right-[1px] z-[5] box-border flex flex-col justify-center overflow-hidden rounded-lg border px-2 py-1 text-[0.8rem] leading-tight",
+                      event.sectionGroup === "math135Lec" ? "border-dashed" : "",
+                      event.color,
+                    ]}
+                    style={`top:${top(event.start)}px;height:${height(event.start, event.end)}px;`}
+                    data-section-group={event.sectionGroup}
+                    data-section-value={event.sectionValue}
+                  >
+                    <div class="font-bold">
+                      {event.course} {event.type}{event.section ? ` ${event.section}` : ""}
+                      {isRoomChoice(event.sectionGroup) && <span data-section-label-group={event.sectionGroup}></span>}
+                    </div>
+                    {event.sectionGroup === "math135Lec" && <div class="text-[0.62rem] font-bold opacity-70">one of two</div>}
+                    <div class="mt-0.5 text-[0.72rem] font-semibold">
+                      <span
+                        data-section-room-group={isRoomChoice(event.sectionGroup) ? event.sectionGroup : undefined}
+                        data-default-room={event.location}
+                      >{event.location}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="mt-6 grid gap-3 sm:grid-cols-2">
+          {UNSCHEDULED_COURSES.map((event) => (
+            <div class="cozy-panel flex items-center gap-4 p-4">
+              <strong class:list={["rounded-lg border px-2.5 py-1 text-sm font-bold", event.color]}>{event.course} {event.type} {event.section}</strong>
+              <p class="text-sm"><span class="font-bold">{event.location}</span> · {event.note}</p>
+            </div>
+          ))}
+          <div class="cozy-panel p-4 text-sm leading-6">
+            <strong>MATH 135 TUT:</strong> TUT 101 in STC 1012 is supported. Check Quest if you have another tutorial until its room is added.
+          </div>
+        </div>
+      </section>
+
+      <section data-view-panel="dated" aria-labelledby="dated-meetings-heading" class="mt-12">
+        <div class="mb-5">
+          <p class="text-sm font-bold text-teal-deep dark:text-sky">Tests and exceptions</p>
+          <h2 id="dated-meetings-heading" class="text-2xl font-bold">Dated meetings</h2>
+          <p class="mt-2 max-w-3xl text-sm leading-6 text-muted dark:text-paper/70">
+            These {SPECIAL_MEETINGS.length} Quest rows happen once. They are deliberately kept out of the typical-week grid so they do not look weekly.
+          </p>
+        </div>
+
+        <div class="space-y-8">
+          {Object.entries(specialMeetingsByMonth).map(([month, meetings]) => (
+            <section aria-labelledby={`dated-${month}`}>
+              <h3 id={`dated-${month}`} class="mb-3 text-xl font-bold">{formatMonth(month)}</h3>
+              <ol class="cozy-panel divide-y divide-teal-deep/10 overflow-hidden dark:divide-sky/15">
+                {meetings.map((meeting) => (
+                  <li class="grid gap-3 p-4 sm:grid-cols-[12rem_1fr_auto] sm:items-center sm:p-5">
+                    <div>
+                      <time datetime={meeting.date} class="font-bold">{formatTorontoDate(meeting.date)}</time>
+                      <p class="text-sm text-muted dark:text-paper/70">
+                        <time datetime={`${meeting.date}T${meeting.start}`}>{meeting.start}</time>–<time datetime={`${meeting.date}T${meeting.end}`}>{meeting.end}</time>
+                      </p>
+                    </div>
+                    <div>
+                      <strong class:list={["inline-flex rounded-lg border px-2.5 py-1 text-sm font-bold", meeting.color]}>
+                        {meeting.course} {meeting.type} {meeting.section}
+                      </strong>
+                      <p class="mt-1 text-sm">{meeting.note}</p>
+                    </div>
+                    <p class="text-sm font-bold sm:text-right">{meeting.location === "TBA" ? "Room TBA — check Quest" : meeting.location}</p>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ))}
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
 </Layout>
+
+<script>
+  const STORAGE_KEY = "se31:timetable:v1";
+  const scheduleUi = document.querySelector<HTMLElement>("[data-schedule-ui]");
+  const personalControls = document.querySelector<HTMLElement>("[data-personal-controls]");
+  const cohortNote = document.querySelector<HTMLElement>("[data-cohort-note]");
+  const status = document.querySelector<HTMLElement>("[data-section-status]");
+  const copyButton = document.querySelector<HTMLButtonElement>("[data-copy-link]");
+  const resetButton = document.querySelector<HTMLButtonElement>("[data-reset-sections]");
+  const useSharedButton = document.querySelector<HTMLButtonElement>("[data-use-shared]");
+  const sectionSelects = Array.from(document.querySelectorAll<HTMLSelectElement>("[data-section-select]"));
+  const scheduleModes = Array.from(document.querySelectorAll<HTMLInputElement>("[data-schedule-mode]"));
+  const contentViews = Array.from(document.querySelectorAll<HTMLInputElement>("[data-content-view]"));
+  const sectionSelectByGroup = new Map(sectionSelects.map((select) => [select.dataset.sectionGroup ?? "", select]));
+  let sharedPreview = false;
+
+  function currentScheduleMode() {
+    return scheduleModes.find((input) => input.checked)?.value ?? "cohort";
+  }
+
+  function currentContentView() {
+    return contentViews.find((input) => input.checked)?.value ?? "typical";
+  }
+
+  function isKnownValue(select: HTMLSelectElement, value: string | null) {
+    return value !== null && Array.from(select.options).some((option) => option.value === value && option.value !== "");
+  }
+
+  function currentSelections() {
+    return Object.fromEntries(
+      sectionSelects
+        .filter((select) => select.value)
+        .map((select) => [select.dataset.sectionGroup ?? "", select.value]),
+    );
+  }
+
+  function setStatus(message: string) {
+    if (status) status.textContent = message;
+  }
+
+  function saveSelections() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, selections: currentSelections() }));
+      setStatus("Saved on this device.");
+    } catch {
+      setStatus("Applied for this visit; browser storage is unavailable.");
+    }
+  }
+
+  function updateCohortNote() {
+    if (cohortNote) {
+      cohortNote.hidden = currentScheduleMode() !== "cohort" || currentContentView() !== "typical";
+    }
+  }
+
+  function applySchedule() {
+    const personal = currentScheduleMode() === "personal";
+    if (personalControls) personalControls.hidden = !personal;
+    updateCohortNote();
+
+    document.querySelectorAll<HTMLElement>("[data-section-value]").forEach((element) => {
+      const group = element.dataset.sectionGroup ?? "";
+      const selected = personal ? sectionSelectByGroup.get(group)?.value ?? "" : "";
+      element.hidden = Boolean(selected && element.dataset.sectionValue !== selected);
+    });
+
+    document.querySelectorAll<HTMLElement>("[data-section-room-group]").forEach((element) => {
+      const group = element.dataset.sectionRoomGroup ?? "";
+      const select = sectionSelectByGroup.get(group);
+      const option = personal && select?.value ? select.selectedOptions[0] : undefined;
+      element.textContent = option?.dataset.room ?? element.dataset.defaultRoom ?? "Room varies by section";
+    });
+
+    document.querySelectorAll<HTMLElement>("[data-section-label-group]").forEach((element) => {
+      const group = element.dataset.sectionLabelGroup ?? "";
+      const select = sectionSelectByGroup.get(group);
+      const option = personal && select?.value ? select.selectedOptions[0] : undefined;
+      element.textContent = option?.dataset.sectionLabel ? ` ${option.dataset.sectionLabel}` : "";
+    });
+  }
+
+  function applyContentView() {
+    const view = currentContentView();
+    document.querySelectorAll<HTMLElement>("[data-view-panel]").forEach((panel) => {
+      panel.hidden = panel.dataset.viewPanel !== view;
+    });
+    updateCohortNote();
+  }
+
+  function buildShareUrl() {
+    const url = new URL(window.location.href);
+    for (const select of sectionSelects) {
+      const queryParam = select.dataset.queryParam;
+      if (!queryParam) continue;
+      if (select.value) url.searchParams.set(queryParam, select.value);
+      else url.searchParams.delete(queryParam);
+    }
+    if (currentContentView() === "dated") url.searchParams.set("view", "dated");
+    else url.searchParams.delete("view");
+    return url;
+  }
+
+  function clearSectionParamsFromAddress() {
+    const url = new URL(window.location.href);
+    for (const select of sectionSelects) {
+      const queryParam = select.dataset.queryParam;
+      if (queryParam) url.searchParams.delete(queryParam);
+    }
+    history.replaceState(null, "", url);
+  }
+
+  function readSavedSelections() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
+      return parsed?.version === 1 && parsed.selections && typeof parsed.selections === "object"
+        ? parsed.selections as Record<string, string>
+        : {};
+    } catch {
+      return {};
+    }
+  }
+
+  if (scheduleUi) {
+    const params = new URLSearchParams(window.location.search);
+    const saved = readSavedSelections();
+    const hasSharedSectionParams = sectionSelects.some((select) => {
+      const queryParam = select.dataset.queryParam;
+      return Boolean(queryParam && params.has(queryParam));
+    });
+    let hasValidSharedSelection = false;
+    let hasInvalidSharedSelection = false;
+
+    for (const select of sectionSelects) {
+      const group = select.dataset.sectionGroup ?? "";
+      const queryParam = select.dataset.queryParam ?? "";
+      const sharedValue = params.get(queryParam);
+      if (sharedValue !== null) {
+        if (isKnownValue(select, sharedValue)) {
+          select.value = sharedValue;
+          hasValidSharedSelection = true;
+        } else {
+          hasInvalidSharedSelection = true;
+        }
+      } else if (!hasSharedSectionParams && isKnownValue(select, saved[group] ?? null)) {
+        select.value = saved[group];
+      }
+    }
+
+    sharedPreview = hasValidSharedSelection;
+    const hasSavedSelection = sectionSelects.some((select) => select.value);
+    const personalMode = sharedPreview || hasSavedSelection;
+    const modeInput = scheduleModes.find((input) => input.value === (personalMode ? "personal" : "cohort"));
+    if (modeInput) modeInput.checked = true;
+
+    if (params.get("view") === "dated") {
+      const datedInput = contentViews.find((input) => input.value === "dated");
+      if (datedInput) datedInput.checked = true;
+    }
+
+    scheduleUi.hidden = false;
+    if (useSharedButton) useSharedButton.hidden = !sharedPreview;
+    applySchedule();
+    applyContentView();
+
+    if (sharedPreview) setStatus("Viewing a shared timetable. Use these sections to save it on this device.");
+    else if (hasInvalidSharedSelection) setStatus("Some shared section codes were not recognized and were ignored.");
+    else if (hasSavedSelection) setStatus("Loaded your saved sections.");
+
+    scheduleModes.forEach((input) => input.addEventListener("change", applySchedule));
+    contentViews.forEach((input) => input.addEventListener("change", applyContentView));
+    sectionSelects.forEach((select) => {
+      select.addEventListener("change", () => {
+        applySchedule();
+        if (!sharedPreview) saveSelections();
+        else setStatus("Shared preview updated. Use these sections to save it.");
+      });
+    });
+
+    useSharedButton?.addEventListener("click", () => {
+      sharedPreview = false;
+      useSharedButton.hidden = true;
+      saveSelections();
+      clearSectionParamsFromAddress();
+    });
+
+    resetButton?.addEventListener("click", () => {
+      sectionSelects.forEach((select) => { select.value = ""; });
+      scheduleModes.forEach((input) => { input.checked = input.value === "cohort"; });
+      contentViews.forEach((input) => { input.checked = input.value === "typical"; });
+      sharedPreview = false;
+      if (useSharedButton) useSharedButton.hidden = true;
+      try { localStorage.removeItem(STORAGE_KEY); } catch { /* The visible reset still works. */ }
+      const cleanUrl = buildShareUrl();
+      cleanUrl.searchParams.delete("view");
+      history.replaceState(null, "", cleanUrl);
+      applySchedule();
+      applyContentView();
+      setStatus("Reset to the cohort overview.");
+    });
+
+    copyButton?.addEventListener("click", async () => {
+      const url = buildShareUrl();
+      try {
+        await navigator.clipboard.writeText(url.toString());
+        setStatus("Timetable link copied.");
+      } catch {
+        setStatus("Could not copy automatically. Copy the address from your browser.");
+      }
+    });
+  }
+</script>
