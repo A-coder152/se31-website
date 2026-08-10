@@ -12,7 +12,7 @@ SE31 Nest is an open-source, unofficial home for the University of Waterloo Soft
 - A public landing page for the cohort.
 - A source-linked record of important dates and trusted Waterloo links.
 - A skimmable guide to the six 1A courses, based on archived outlines.
-- A clearly labelled planning draft that always points students back to their official Quest schedule.
+- A section-aware Fall 2026 timetable based on official listings and cohort-supplied Quest rows, while keeping each student’s Quest schedule authoritative.
 - A shared cohort home that students can improve as we grow.
 
 ## Important Disclaimer
@@ -26,7 +26,7 @@ Please verify all academic and administrative deadlines and information through 
 -   **Home Page:** Current milestones, the next action, timetable status, all six 1A courses, official shortcuts, and a contribution CTA.
 -   **Courses:** Six detailed, navigable guides that summarize archived Fall 2025 Waterloo outlines and link back to the source.
 -   **Deadlines Page:** Chronological list of upcoming and past deadlines with live countdowns, categories, sources, and verification status.
--   **Timetable Page:** An explicitly unofficial Fall 2026 planning draft with unconfirmed locations called out.
+-   **Timetable Page:** A section-aware Fall 2026 typical week, personalized tutorial rooms, and a separate chronological list of tests and additional meetings.
 -   **Resources Page:** Curated directory of links grouped by category, with clear source indicators.
 -   **Contribute:** A practical guide to improving content, features, design, and accessibility.
 -   **Tech Stack:** Astro, TypeScript, Tailwind CSS.
