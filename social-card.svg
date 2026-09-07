@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#83CED5"/>
+  <circle cx="1125" cy="70" r="190" fill="#FEFDFA" opacity="0.18"/>
+  <circle cx="80" cy="610" r="155" fill="#6DACB1" opacity="0.34"/>
+
+  <rect x="58" y="92" width="650" height="446" rx="58" fill="#FEFDFA"/>
+  <rect x="104" y="136" width="248" height="40" rx="20" fill="#F8CB10"/>
+  <text x="127" y="162" fill="#48301F" font-family="DejaVu Sans, sans-serif" font-size="17" font-weight="700">WATERLOO SE · CLASS OF 2031</text>
+
+  <text x="101" y="294" fill="#48301F" font-family="DejaVu Sans, sans-serif" font-size="82" font-weight="700" letter-spacing="-2">SE31 Nest</text>
+  <text x="105" y="352" fill="#48301F" font-family="DejaVu Sans, sans-serif" font-size="30" font-weight="600">Our cohort, all in one place.</text>
+  <text x="105" y="414" fill="#665B51" font-family="DejaVu Sans, sans-serif" font-size="23" font-weight="500">Courses, dates, a draft timetable</text>
+  <text x="105" y="449" fill="#665B51" font-family="DejaVu Sans, sans-serif" font-size="23" font-weight="500">and the Waterloo links we keep reaching for.</text>
+  <text x="105" y="500" fill="#356F72" font-family="DejaVu Sans, sans-serif" font-size="18" font-weight="700">STUDENT-MADE · UNOFFICIAL · SOURCE-LINKED</text>
+
+  <image x="722" y="72" width="430" height="430" xlink:href="favicon.png" href="favicon.png" preserveAspectRatio="xMidYMid meet"/>
+  <path d="M770 541H1110" stroke="#6DACB1" stroke-width="8" stroke-linecap="round"/>
+  <path d="M770 541H1000" stroke="#F8CB10" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="1110" cy="541" r="9" fill="#F4AD4B"/>
+</svg>
